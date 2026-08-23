@@ -27,6 +27,9 @@
 | 上游 8 个 workflow 全 active | `ci` / `nix-build` / `release` / `pkg-pr-new` / `pr-title-checker` / `docs-deploy` **在仓库设置里禁用**（GitHub API，不改文件） | 跑整个 monorepo 太重且缺上游 secret；`docs-deploy` 会占用 Pages 部署 | **不改文件所以零冲突**。上游新增 workflow 时记得也去禁用 |
 | 无自建 CI | 新增 `.github/workflows/omk-ci.yml` | 只验证 omk 包 + 守住侵入面白名单 | 新文件，不冲突 |
 | Pages 部署上游 vitepress 文档 | 新增 `.github/workflows/omk-pages.yml`，部署 `site/` | 项目主页 | 新文件，不冲突 |
+| `CLAUDE.md` 是上游 Agent 指南（`AGENTS.md` 的副本） | 换成 fork 层的指南 | 上游那套讲的是给 kimi-code 提 PR 的流程，在这里会误导 | 上游近 60 天只改过 1 次；`AGENTS.md`（23 次）和 `flake.nix`（25 次）是烫的，**一个字都不碰** |
+| 增删 workspace 包要同步 `flake.nix` | **故意不做** | `flake.nix` 60 天改 25 次，为两行登记去碰它换来长期冲突；Nix 构建这里不用，`nix-build.yml` 已禁用 | 代价：`node scripts/check-nix-workspace.mjs` 会一直报 `@omk/core` 缺失、退出码 1。**这是预期行为，别去"修"** |
+| 无 `packages/omk/AGENTS.md` | 新增 | 上游约定「follow the nearest AGENTS.md」，在 omk 里干活时会命中这份 | 新文件，不冲突 |
 
 ## 我已改进、不许被上游盖回去的行为
 
