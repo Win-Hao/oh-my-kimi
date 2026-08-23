@@ -65,7 +65,26 @@ Whenever you decide to diverge from upstream, record it in
 
 ## Features
 
-_(Scaffolding only so far; the first feature has not landed yet.)_
+### `/eli5` — a picture explainer, on demand
+
+Turns the last answer (or a topic you name) into **an HTML explainer**: big pictures, few
+words — written to the OS temp dir and opened in your browser.
+
+```
+/eli5                 # re-explain the last answer
+/eli5 kubernetes      # explain a topic
+```
+
+It follows the shape of the `eli5` plugin in
+[anthropics/claude-plugins-community](https://github.com/anthropics/claude-plugins-community):
+one core instruction and nothing else, leaving the judgement to the model. We only added the
+plumbing a terminal needs — write to temp, open it, never touch the repo. See
+[`packages/omk/NOTICE.md`](./packages/omk/NOTICE.md).
+
+It ships as an upstream **builtin skill**, which is why the palette shows a bare `/eli5`
+(user skills carry a `skill:` prefix) — and why it needs **zero upstream edits**: the TUI's
+slash commands come from a static array upstream, and the engine's `contributeCommand` seam is
+only surfaced over RPC, which the TUI never reads.
 
 ## Relationship to upstream
 

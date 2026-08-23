@@ -18,7 +18,49 @@ oh-my-kimi 在上游 kimi-code 之上加的所有东西都住在这个包里。
    - 新增服务 → `registerScopedService(scope, id, ctor, ...)`
    - **替换上游服务的实现** → `overrideScopedService(...)`，这是上游提供的正规替换入口，
      用它就不用去改上游源码。
+   - **加一条用户可敲的斜杠命令** → 注册成 builtin skill：
+     `registerBuiltinSkill(...)`（深导入 `agent-core-v2/app/skillCatalog/builtin/registry`），
+     参考 `src/features/eli5/`。
+     别走 `Feature.contributeCommand`——那条 seam 只通过 RPC 暴露给 SDK / VS Code，
+     TUI 的斜杠命令来自上游写死的 `BUILTIN_SLASH_COMMANDS`，压根不读它。
+     builtin 来源的 skill 在面板里是裸名（`/eli5`），用户 skill 才带 `skill:` 前缀。
 4. 配套测试写进 `test/`。
+
+## 目录约定
+
+**按大类分目录，一类一个文件夹**（照 oh-my-pi 的 `tools/` / `commands/` / `slash-commands/`）。
+
+```
+packages/omk/
+  NOTICE.md                第三方许可，按功能分节
+  src/
+    index.ts               清单：import 各模块 + registerFeature('<名字>')，逻辑一行不放
+    skills/                接 registerBuiltinSkill —— 用户可敲的斜杠命令
+      eli5.ts                注册 + SkillDefinition
+      eli5.md                正文（`?raw` 导入，tsdown 的 rawTextPlugin 负责内联）
+    tools/                 接 Feature.contributeTool —— 模型可调用的工具
+    services/              接 registerScopedService / overrideScopedService
+    features/              需要上游 Feature 类时（contributeConfig / contributeCommand 等）
+    lib/                   跨类共享代码
+  test/<名字>.test.ts      一个功能一个测试文件
+```
+
+`tools/` `services/` `features/` `lib/` 先不建空目录，第一次用到时再开。
+
+四条规则：
+
+1. **目录 = 接的哪个 seam。** 看一个文件在哪个目录，就知道它挂在上游的哪个扩展点上——
+   同步上游时该盯哪块代码，一目了然。
+2. **一个文件够就别建目录。** 上游自己的 builtin skill 就是 `write-goal.ts` + `write-goal.md`
+   平铺在一起的，照这个来。超过三四个文件再给它开子目录。
+3. **一个功能横跨多类时，靠同名串起来**：`skills/eli5.ts` + `tools/eli5.ts`，
+   不要为此把它们塞回同一个目录——那就退回按功能分了。
+4. **`index.ts` 保持成清单。** 想知道 omk 加了什么，读这一个文件就够。
+
+删功能：删各类目录下的同名文件、删 `index.ts` 那一行、删测试、删 `NOTICE.md` 分节、
+删 `DIVERGENCES.md` 里对应的行。
+
+命名：文件名跟用户看到的名字一致（`eli5.ts` → `/eli5`），kebab-case。
 
 ## 加载时序（别改）
 
