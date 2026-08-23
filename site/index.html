@@ -3,243 +3,67 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>oh-my-kimi — 个人维护的 kimi-code 增强版</title>
-<meta name="description" content="真 fork，持续同步上游，不是插件层。对上游源码的侵入只有 2 个文件 4 行。">
+<title>oh-my-kimi</title>
+<meta name="description" content="个人维护的 kimi-code 增强版。">
 <style>
 :root{
-  --paper:#faf6ef; --paper-2:#f3ece1; --ink:#2b2823; --ink-2:#6b6259;
-  --rule:#e0d6c8; --accent:#9c4a2f; --accent-2:#2f6b63; --code-bg:#f0e8db;
-  --shadow:0 1px 2px rgba(60,45,25,.06),0 8px 24px rgba(60,45,25,.05);
+  --paper:#faf6ef; --ink:#2b2823; --ink-2:#6b6259;
+  --rule:#e0d6c8; --accent:#9c4a2f; --paper-2:#f3ece1;
 }
 :root[data-theme="dark"]{
-  --paper:#171513; --paper-2:#1f1c19; --ink:#e9e2d6; --ink-2:#a1978a;
-  --rule:#332e28; --accent:#e08a63; --accent-2:#6fbdb0; --code-bg:#221e1a;
-  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
+  --paper:#171513; --ink:#e9e2d6; --ink-2:#a1978a;
+  --rule:#332e28; --accent:#e08a63; --paper-2:#1f1c19;
 }
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
 body{
-  margin:0; background:var(--paper); color:var(--ink);
+  margin:0; min-height:100vh; background:var(--paper); color:var(--ink);
   font:16px/1.75 -apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
-  transition:background .25s,color .25s;
+  display:flex; flex-direction:column; transition:background .25s,color .25s;
 }
-.wrap{max-width:760px;margin:0 auto;padding:0 24px 96px}
-code,pre,.mono{font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace}
-
-header.top{display:flex;align-items:center;justify-content:space-between;padding:28px 0 0}
-.brand{font-weight:600;letter-spacing:-.01em}
-.brand em{font-style:normal;color:var(--accent)}
-button#theme{
+.wrap{max-width:640px;width:100%;margin:0 auto;padding:0 24px;flex:1;display:flex;flex-direction:column}
+header{display:flex;align-items:center;justify-content:flex-end;padding:24px 0}
+button{
   border:1px solid var(--rule);background:transparent;color:var(--ink-2);
   border-radius:999px;padding:5px 14px;font-size:13px;cursor:pointer;transition:.2s;
 }
-button#theme:hover{color:var(--ink);border-color:var(--ink-2)}
-
-.hero{padding:64px 0 40px;border-bottom:1px solid var(--rule)}
-.hero h1{font-size:clamp(38px,7vw,60px);line-height:1.05;margin:0 0 20px;letter-spacing:-.03em;font-weight:650}
-.hero .lede{font-size:20px;color:var(--ink-2);margin:0 0 28px;max-width:34em;line-height:1.6}
-.hero .lede strong{color:var(--ink);font-weight:600}
-.links a{
-  display:inline-block;margin:0 10px 10px 0;padding:9px 18px;border-radius:8px;
-  text-decoration:none;font-size:14.5px;border:1px solid var(--rule);
-  color:var(--ink);background:var(--paper-2);transition:.2s;
+button:hover{color:var(--ink);border-color:var(--ink-2)}
+main{flex:1;display:flex;flex-direction:column;justify-content:center;padding:40px 0 80px}
+h1{font-size:clamp(40px,9vw,64px);margin:0 0 18px;letter-spacing:-.03em;font-weight:650;line-height:1.05}
+h1 em{font-style:normal;color:var(--accent)}
+p{margin:0 0 12px;color:var(--ink-2);font-size:18px}
+.note{font-size:15px;margin:28px 0 32px}
+a.btn{
+  display:inline-block;padding:9px 18px;border-radius:8px;text-decoration:none;
+  font-size:14.5px;border:1px solid var(--accent);background:var(--accent);color:var(--paper);
+  transition:.2s;
 }
-.links a:hover{border-color:var(--accent);color:var(--accent)}
-.links a.primary{background:var(--accent);color:var(--paper);border-color:var(--accent)}
-.links a.primary:hover{opacity:.88;color:var(--paper)}
-
-section{padding:52px 0;border-bottom:1px solid var(--rule)}
-section:last-of-type{border-bottom:0}
-h2{font-size:13px;text-transform:uppercase;letter-spacing:.13em;color:var(--accent-2);
-   margin:0 0 20px;font-weight:650}
-h3{font-size:21px;margin:34px 0 12px;letter-spacing:-.01em;font-weight:600}
-p{margin:0 0 16px}
-a{color:var(--accent)}
-strong{font-weight:600}
-.muted{color:var(--ink-2)}
-
-table{width:100%;border-collapse:collapse;margin:18px 0 22px;font-size:14.5px}
-th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--rule);vertical-align:top}
-th{font-weight:600;color:var(--ink-2);font-size:12.5px;text-transform:uppercase;letter-spacing:.06em}
-td.num{text-align:right;font-family:ui-monospace,Menlo,monospace;white-space:nowrap}
-
-pre{background:var(--code-bg);border:1px solid var(--rule);border-radius:10px;
-    padding:16px 18px;overflow-x:auto;font-size:13.5px;line-height:1.65;margin:18px 0}
-:not(pre)>code{background:var(--code-bg);padding:2px 6px;border-radius:5px;font-size:.9em}
-
-.callout{background:var(--paper-2);border-left:3px solid var(--accent);
-         padding:16px 20px;border-radius:0 10px 10px 0;margin:22px 0;box-shadow:var(--shadow)}
-.callout p:last-child{margin:0}
-
-.bars{margin:18px 0 6px}
-.bar-row{display:grid;grid-template-columns:180px 1fr 52px;gap:12px;align-items:center;
-         margin-bottom:7px;font-size:13.5px}
-.bar-row .lbl{font-family:ui-monospace,Menlo,monospace;color:var(--ink-2);
-              overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.bar-track{background:var(--paper-2);border-radius:4px;height:19px;overflow:hidden}
-.bar-fill{height:100%;border-radius:4px;background:var(--accent);opacity:.75}
-.bar-fill.cool{background:var(--accent-2)}
-.bar-row .val{text-align:right;font-family:ui-monospace,Menlo,monospace;color:var(--ink-2)}
-
-footer{padding:40px 0;color:var(--ink-2);font-size:14px}
-footer p{margin:0 0 8px}
-@media(max-width:560px){
-  .bar-row{grid-template-columns:120px 1fr 44px}
-  section{padding:40px 0}
-}
+a.btn:hover{opacity:.88}
+footer{padding:24px 0 32px;color:var(--ink-2);font-size:13.5px;border-top:1px solid var(--rule)}
+footer a{color:var(--accent)}
+footer p{font-size:13.5px;margin:0 0 6px}
 </style>
 </head>
 <body>
 <div class="wrap">
+  <header><button id="theme" type="button">切换主题</button></header>
 
-<header class="top">
-  <span class="brand">oh-my-<em>kimi</em></span>
-  <button id="theme" type="button">切换主题</button>
-</header>
+  <main>
+    <h1>oh-my-<em>kimi</em></h1>
+    <p>个人维护的 kimi-code 增强版。</p>
+    <p class="note">站点建设中。目前进展请看仓库。</p>
+    <div><a class="btn" href="https://github.com/Win-Hao/oh-my-kimi">GitHub 仓库</a></div>
+  </main>
 
-<div class="hero">
-  <h1>做一个真的有人维护的<br>kimi-code 增强版</h1>
-  <p class="lede">
-    GitHub 上叫 <code>oh-my-kimi</code> 的项目有 15 个。<strong>14 个是插件层，1 个是真 fork，
-    绝大多数已经停更。</strong>这个项目要占的是剩下那个空位。
-  </p>
-  <div class="links">
-    <a class="primary" href="https://github.com/Win-Hao/oh-my-kimi">GitHub 仓库</a>
-    <a href="https://github.com/Win-Hao/oh-my-kimi/blob/main/DIVERGENCES.md">分歧记录</a>
-    <a href="https://github.com/MoonshotAI/kimi-code">上游 kimi-code</a>
-  </div>
-</div>
-
-<section>
-  <h2>调研</h2>
-  <h3>那 15 个 oh-my-kimi 是怎么死的</h3>
-  <table>
-    <tr><th>项目</th><td class="num">★</td><th>最后 push</th><th>是什么</th></tr>
-    <tr><td>wang-h/oh-my-kimi</td><td class="num">6</td><td>2026-04-05</td><td>多智能体编排层</td></tr>
-    <tr><td>Goblin1024/oh-my-kimi</td><td class="num">6</td><td>2026-07-01</td><td>工作流编排层</td></tr>
-    <tr><td>Yorha9e/oh-my-kimi-code</td><td class="num">4</td><td>2026-08-21</td><td><strong>唯一的真 fork</strong></td></tr>
-    <tr><td>xz1220/oh-my-kimi</td><td class="num">0</td><td>2026-05-14</td><td>skill / hook / MCP 包</td></tr>
-    <tr><td class="muted">其余 11 个</td><td class="num muted">0</td><td class="muted">2026-03 ~ 05</td><td class="muted">全是编排层 / workflow layer</td></tr>
-  </table>
-  <p>
-    结论不是「这些人不行」，而是<strong>插件层有天花板</strong>。把 skill、hook、MCP server
-    配完，能做的事就到头了，项目自然停在那儿。
-  </p>
-  <p>
-    真 fork 没人做，原因也很实在：上游 kimi-code 近 30 天有
-    <strong>281 个提交</strong>，18 天发了 10 个版本。跟得住是件苦差事。
-  </p>
-</section>
-
-<section>
-  <h2>可行性</h2>
-  <h3>上游快，不等于跟不住</h3>
-  <p>
-    参照组是 <a href="https://github.com/can1357/oh-my-pi">oh-my-pi</a>——它 fork 的上游
-    <a href="https://github.com/earendil-works/pi">pi</a> 近 7 天有 <strong>86 个提交</strong>，
-    比 kimi-code 的 73 还快。omp 在上面跑了 8 个月、653 个版本。
-  </p>
-  <p>它的关键做法是<strong>把冲突面积锁死在包这一级</strong>：</p>
-  <table>
-    <tr><th>omp 的 17 个包</th><th>与上游的关系</th></tr>
-    <tr><td class="mono">agent · ai · coding-agent · tui</td><td>继承自上游，<strong>冲突只发生在这 4 个</strong></td></tr>
-    <tr><td class="mono">hashline · swarm · snapcompact · mnemopi · natives …</td><td>全部是自己新开的包，永不冲突</td></tr>
-  </table>
-  <p>
-    它的招牌功能一个都没塞进上游的包里。
-  </p>
-  <div class="callout">
-    <p>
-      <strong>但也要看清终局。</strong>omp 的 <code>porting-from-pi-mono.md</code> 里，
-      Last Sync Point 钉在 <code>2026-03-22</code>——<strong>五个月没同步了</strong>。
-      深度二开的尽头大概率是硬 fork。这个项目对此没有幻想，只是想把那一天推得尽量远。
-    </p>
-  </div>
-</section>
-
-<section>
-  <h2>做法</h2>
-  <h3>对上游的全部侵入：2 个文件，4 行</h3>
-<pre>packages/omk/                 ← 我写的所有东西都在这，新文件永远不冲突
-apps/kimi-code/src/main.ts    ← 顶部一行 import '@omk/core'    ┐ 全部
-apps/kimi-code/package.json   ← devDeps 一行 @omk/core          ┘ 侵入</pre>
-  <p>
-    CI 里有一条检查专门守着这个约束：任何超出白名单的上游文件改动都会让构建失败，
-    强迫我先回答「能不能改成在 omk 里加个新东西」。
-  </p>
-
-  <h3>接缝是按 churn 数据选的，不是按顺手</h3>
-  <p>下面是上游近 60 天的改动次数。挂载点选在冷的地方，功能写在冷的地方：</p>
-  <div class="bars">
-    <div class="bar-row"><span class="lbl">src/agent</span><span class="bar-track"><span class="bar-fill" style="width:100%"></span></span><span class="val">1971</span></div>
-    <div class="bar-row"><span class="lbl">src/app</span><span class="bar-track"><span class="bar-fill" style="width:69%"></span></span><span class="val">1370</span></div>
-    <div class="bar-row"><span class="lbl">src/session</span><span class="bar-track"><span class="bar-fill" style="width:34%"></span></span><span class="val">678</span></div>
-    <div class="bar-row"><span class="lbl">src/tui</span><span class="bar-track"><span class="bar-fill" style="width:28%"></span></span><span class="val">551</span></div>
-    <div class="bar-row"><span class="lbl">src/_base</span><span class="bar-track"><span class="bar-fill" style="width:13%"></span></span><span class="val">262</span></div>
-    <div class="bar-row"><span class="lbl">src/features</span><span class="bar-track"><span class="bar-fill" style="width:12%"></span></span><span class="val">235</span></div>
-  </div>
-  <p>单个文件更能说明问题：</p>
-  <div class="bars">
-    <div class="bar-row"><span class="lbl">agent-core-v2/src/index.ts</span><span class="bar-track"><span class="bar-fill" style="width:100%"></span></span><span class="val">69</span></div>
-    <div class="bar-row"><span class="lbl">kimi-code/src/main.ts</span><span class="bar-track"><span class="bar-fill cool" style="width:8.7%"></span></span><span class="val">6</span></div>
-  </div>
-  <p>
-    <code>index.ts</code> 是 kimi 那套 <code>import = register</code> 架构的枢纽，
-    文件头自己写着「importing the package loads all scoped-registry registrations」——
-    看起来正是该注册的地方，实际是全仓第一热点文件。挂在那上面等于天天解冲突。
-    <code>main.ts</code> 60 天只动了 6 次。
-  </p>
-
-  <h3>同步：merge，不是 rebase</h3>
-<pre>./scripts/omk-sync.sh --dry   # 预览：多少新提交、哪些文件可能冲突
-./scripts/omk-sync.sh         # 执行</pre>
-  <p>
-    这个 fork 不往上游提 PR，不需要干净的历史；而 merge 每次只处理增量，
-    rebase 每次都要把全部改动重放一遍。脚本会先算出
-    <em>我改过的文件 ∩ 上游这次改过的文件</em>，冲突之前就告诉我。
-  </p>
-  <p>
-    <strong>每天或每两天跑一次。</strong>攒一周是 70 个提交，攒一个月是 280 个——
-    冲突难度对间隔是超线性的。
-  </p>
-
-  <h3>DIVERGENCES.md</h3>
-  <p>
-    每次决定「这里要跟上游不一样」，立刻记一条 + 写清楚为什么。这张表是 fork 最重要的资产：
-    没有它，下次同步就会有人（包括三个月后的自己）把上游的写法又搬回来，然后疑惑为什么坏了。
-    这一招是从 omp 的移植指南第 15 节「Intentional Divergences」学来的。
-  </p>
-</section>
-
-<section>
-  <h2>现状</h2>
-  <p>
-    骨架已就位：独立包、接缝、同步脚本、分歧记录、CI 侵入面检查。<strong>第一个功能还没落地。</strong>
-  </p>
-  <p class="muted">
-    这个项目是一边加功能一边把 harness 内部拆开看懂，所以路线会跟着理解走，
-    不预先画一张假的 roadmap。进展看
-    <a href="https://github.com/Win-Hao/oh-my-kimi/commits/main">提交历史</a>。
-  </p>
-</section>
-
-<footer>
-  <p>
-    fork 自 <a href="https://github.com/MoonshotAI/kimi-code">MoonshotAI/kimi-code</a>，
-    遵循 MIT 许可证，版权归 Moonshot AI 所有。
-  </p>
-  <p><strong>非官方个人项目，与 Moonshot AI 无关。</strong>上游的问题请去上游反馈。</p>
-</footer>
-
+  <footer>
+    <p>fork 自 <a href="https://github.com/MoonshotAI/kimi-code">MoonshotAI/kimi-code</a>，遵循 MIT 许可证，版权归 Moonshot AI 所有。</p>
+    <p>非官方个人项目，与 Moonshot AI 无关。</p>
+  </footer>
 </div>
 <script>
 (function(){
-  var KEY='omk-theme';
-  var root=document.documentElement;
-  var saved=null;
+  var KEY='omk-theme', root=document.documentElement, saved=null;
   try{saved=localStorage.getItem(KEY)}catch(e){}
-  var initial=saved||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
-  root.setAttribute('data-theme',initial);
+  root.setAttribute('data-theme', saved||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));
   document.getElementById('theme').addEventListener('click',function(){
     var next=root.getAttribute('data-theme')==='dark'?'light':'dark';
     root.setAttribute('data-theme',next);
