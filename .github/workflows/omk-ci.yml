@@ -34,20 +34,4 @@ jobs:
         run: pnpm --filter @omk/core typecheck
 
       - name: 检查对上游的侵入面没有扩大
-        run: |
-          # 这个 fork 的核心约束：相对上游，只允许改这两个文件。
-          # 越界就说明该重新考虑「能不能改成在 omk 里加新东西」，并更新 DIVERGENCES.md。
-          git remote add upstream https://github.com/MoonshotAI/kimi-code.git
-          git fetch --quiet --no-tags upstream main
-          BASE="$(git merge-base HEAD upstream/FETCH_HEAD 2>/dev/null || git merge-base HEAD FETCH_HEAD)"
-          echo "上游基线：${BASE}"
-          CHANGED="$(git diff --name-only "${BASE}..HEAD" \
-            | grep -vE '^(packages/omk/|site/|scripts/omk-|\.github/workflows/omk-|README|DIVERGENCES\.md)' \
-            | grep -vE '^(apps/kimi-code/src/main\.ts|apps/kimi-code/package\.json|pnpm-lock\.yaml)$' || true)"
-          if [ -n "${CHANGED}" ]; then
-            echo "⚠️  以下上游文件被改动，超出了约定的侵入面："
-            echo "${CHANGED}" | sed 's/^/    /'
-            echo "确认是有意为之的话，记进 DIVERGENCES.md 并更新本检查的白名单。"
-            exit 1
-          fi
-          echo "✅ 侵入面仍是 main.ts + package.json"
+        run: ./scripts/omk-check-footprint.sh --committed
