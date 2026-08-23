@@ -1,126 +1,95 @@
-# Kimi Code CLI
+<div align="center">
 
-[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![Docs](https://img.shields.io/badge/docs-online-blue)](https://moonshotai.github.io/kimi-code/en/) <br>
-[Documentation](https://moonshotai.github.io/kimi-code/en/) · [Issues](https://github.com/MoonshotAI/kimi-code/issues) · [中文](README.zh-CN.md)
+# oh-my-kimi
 
-![Demo of using Kimi Code](./docs/media/intro.gif)
+**个人维护的 [Kimi Code](https://github.com/MoonshotAI/kimi-code) 增强版。**
 
-## What is Kimi Code CLI
+真 fork，持续同步上游 —— 不是插件层。
 
-Kimi Code CLI is an AI coding agent that runs in your terminal — it can read and edit code, run shell commands, search files, fetch web pages, and choose the next step based on the feedback it receives. It works out of the box with Moonshot AI’s Kimi models and can also be configured to use other compatible providers.
+[English](./README.en.md) · [项目主页](https://win-hao.github.io/oh-my-kimi/) · [分歧记录](./DIVERGENCES.md)
 
-## Install
+</div>
 
-Install with the official script. No Node.js required.
+---
 
-- **macOS or Linux**:
+## 这是什么
 
-```sh
-curl -fsSL https://code.kimi.com/kimi-code/install.sh | bash
-```
+在上游 kimi-code 之上做加法，一边加功能一边把 harness 的内部拆开看懂。
+所有增强都住在独立的 `packages/omk/` 包里，**对上游源码的侵入只有 2 个文件、4 行**。
 
-- **Windows (PowerShell)**:
+## 为什么不做插件层
 
-```powershell
-irm https://code.kimi.com/kimi-code/install.ps1 | iex
-```
+GitHub 上已经有 15 个叫 `oh-my-kimi` 的项目。查了一遍：**14 个是插件 / 编排层，只有 1 个是真 fork。**
+最高 6 颗星，绝大多数停更在 2026 年 3～7 月。
 
-> On Windows, install [Git for Windows](https://gitforwindows.org/) before first launch because Kimi Code CLI uses the bundled Git Bash as its shell environment. If Git Bash is installed in a custom location, set `KIMI_SHELL_PATH` to the absolute path of `bash.exe`.
+插件层有天花板 —— 把 skill、hook、MCP 配完就没得做了，项目自然停更。
+真 fork 没人做，因为跟上游的维护成本吓人（kimi-code 近 30 天 281 个提交）。
 
-Then, run it with a new shell session:
+这个项目要占的就是那个空位：**真 fork + 真维护**。
 
-```sh
-kimi --version
-```
-
-For npm install, upgrade, uninstall, see [Getting Started](https://moonshotai.github.io/kimi-code/en/guides/getting-started).
-
-## Quick Start
-
-Open a project and start the interactive UI:
-
-```sh
-cd your-project
-kimi
-```
-
-On first launch, run `/login` inside Kimi Code CLI and choose either Kimi Code OAuth or a Moonshot AI Open Platform API key. After login, try your first task:
+## 架构
 
 ```
-Take a look at this project and explain its main directories.
+packages/omk/              ← 我写的所有东西都在这，新文件永远不冲突
+apps/kimi-code/src/main.ts ← 顶部一行 import '@omk/core'   ┐ 对上游的
+apps/kimi-code/package.json← devDeps 一行 @omk/core        ┘ 全部侵入
 ```
 
-## Key Features
+接缝选 `main.ts` 是查过数据的：它近 60 天只被上游改过 **6** 次。
+而看起来更正统的挂载点 `agent-core-v2/src/index.ts`（`import = register` 的枢纽）
+被改了 **69** 次，是全仓第一热点文件 —— 挂在那上面等于天天解冲突。
 
-- **Single-binary distribution.** Install with one command: no Node.js setup, PATH gymnastics, or global module conflicts.
-- **Blazing-fast startup.** The TUI is ready in milliseconds, so starting a session never feels heavy.
-- **Purpose-built TUI.** A carefully tuned interface, optimized end to end for long, focused agent sessions.
-- **Video input.** Drop a screen recording or demo clip into the chat and let the agent watch what is hard to describe in words — turn a reference clip into a LUT, a long video into a short, a screen recording into working code, and more.
-- **AI-native MCP configuration.** Add, edit, and authenticate Model Context Protocol servers conversationally with `/mcp-config`, without hand-editing JSON.
-- **Rich plugin ecosystem.** Install skills, MCP servers, and data sources from the marketplace or any GitHub repo, with each install's trust level surfaced up front.
-- **Subagents for focused, parallel work.** Dispatch built-in `coder`, `explore`, and `plan` subagents in isolated contexts while keeping the main conversation clean.
-- **Lifecycle hooks.** Run local commands at key points to gate risky tool calls, audit decisions, trigger desktop notifications, or connect to your own automation.
-- **Editor & IDE integration (ACP).** Drive a Kimi Code CLI session straight from Zed, JetBrains, or any [Agent Client Protocol](https://agentclientprotocol.com/) client with `kimi acp`.
+同理，上游 churn 最高的 `src/agent`（1971）、`src/app`（1370）、`src/session`（678）
+一律不碰。
 
-## Use it in your editor (ACP)
+## 开发
 
-Kimi Code CLI speaks the [Agent Client Protocol](https://agentclientprotocol.com/), so ACP-compatible editors and IDEs (Zed, JetBrains, …) can drive a session over stdio. Log in once, then point your editor at the `kimi acp` subcommand — no extra login needed.
-
-For Zed, add this to `~/.config/zed/settings.json`:
-
-```json
-{
-  "agent_servers": {
-    "Kimi Code CLI": {
-      "type": "custom",
-      "command": "kimi",
-      "args": ["acp"],
-      "env": {}
-    }
-  }
-}
-```
-
-Then open a new conversation in Zed's Agent panel. See [Using in IDEs](https://moonshotai.github.io/kimi-code/en/guides/ides) for JetBrains setup and troubleshooting, and the [`kimi acp` reference](https://moonshotai.github.io/kimi-code/en/reference/kimi-acp) for the full capability matrix.
-
-## Docs
-
-- [Getting Started](https://moonshotai.github.io/kimi-code/en/guides/getting-started)
-- [Interaction and approvals](https://moonshotai.github.io/kimi-code/en/guides/interaction)
-- [Sessions](https://moonshotai.github.io/kimi-code/en/guides/sessions)
-- [Using in IDEs (ACP)](https://moonshotai.github.io/kimi-code/en/guides/ides)
-- [Configuration](https://moonshotai.github.io/kimi-code/en/configuration/config-files)
-- [Command reference](https://moonshotai.github.io/kimi-code/en/reference/kimi-command)
-
-## Develop
-
-Requirements: Node.js ≥ 24.15.0, pnpm 10.33.0.
-
-```sh
-git clone https://github.com/MoonshotAI/kimi-code.git
-cd kimi-code
+```bash
 pnpm install
+
+# 启动（KIMI_CODE_HOME 隔离，不污染你日常在用的 kimi）
+cd apps/kimi-code
+OMK_DEBUG=1 KIMI_CODE_HOME=~/.oh-my-kimi \
+  npx tsx --tsconfig ./tsconfig.dev.json \
+  --import ../../build/register-raw-text-loader.mjs ./src/main.ts
 ```
 
-```sh
-pnpm dev:cli    # run the CLI in dev mode
-pnpm test       # run tests
-pnpm typecheck  # TypeScript check
-pnpm lint       # oxlint
-pnpm build      # build all packages
+> ⚠️ `--tsconfig ./tsconfig.dev.json` 不能省，否则 `experimentalDecorators` 直接报错崩掉。
+> 上游的 `dev:cli-only` 脚本漏了这个参数。
+
+```bash
+pnpm --filter @omk/core test        # 单测
+pnpm --filter @omk/core typecheck   # 类型检查
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the full contribution guide.
+## 同步上游
 
-## Community
+```bash
+./scripts/omk-sync.sh --dry   # 预览：有多少新提交、哪些文件可能冲突
+./scripts/omk-sync.sh         # 执行
+```
 
-- [Issues](https://github.com/MoonshotAI/kimi-code/issues)
-- For security vulnerabilities, see [SECURITY.md](SECURITY.md).
+用 `merge` 不用 `rebase`：这个 fork 不往上游提 PR，不需要干净的历史，
+而 merge 每次只处理增量，rebase 每次都要重放全部提交。
 
-## Acknowledgements
+**建议每天或每两天跑一次。** 攒一周是 70 个提交，攒一个月是 280 个 ——
+冲突难度对间隔是超线性的。
 
-Our TUI is built on top of [`pi-tui`](https://github.com/earendil-works/pi-mono/tree/main/packages/tui). We thank the authors of `pi-tui` for their valuable work.
+每次决定「这里要跟上游不一样」，立刻记进 [`DIVERGENCES.md`](./DIVERGENCES.md)。
+没有那张表，下次同步就会有人（包括三个月后的自己）把上游的写法又搬回来。
+
+## 功能
+
+_（骨架刚搭好，第一个功能还没落地。）_
+
+## 与上游的关系
+
+本项目 fork 自 [MoonshotAI/kimi-code](https://github.com/MoonshotAI/kimi-code)，
+遵循其 MIT 许可证，版权归 Moonshot AI 所有（见 [LICENSE](./LICENSE)）。
+
+**这是非官方的个人项目，与 Moonshot AI 无关。**
+上游的问题请去上游仓库反馈，不要提到这里。
 
 ## License
 
-Released under the [MIT License](LICENSE).
+MIT

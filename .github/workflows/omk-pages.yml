@@ -1,0 +1,34 @@
+# 把 site/ 部署到 GitHub Pages。
+# site/ 是纯静态单文件，没有构建步骤，所以这里只是上传。
+# 上游的 docs-deploy.yml（部署它自己的 vitepress 文档）已在仓库设置里禁用。
+name: omk Pages
+
+on:
+  push:
+    branches: [main]
+    paths: ['site/**', '.github/workflows/omk-pages.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./site
+      - id: deployment
+        uses: actions/deploy-pages@v4
