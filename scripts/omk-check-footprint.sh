@@ -10,7 +10,7 @@ cd "$(dirname "$0")/.."
 # 属于 omk 自己的路径，不算侵入
 OURS='^(packages/omk/|site/|scripts/omk-|\.github/workflows/omk-)'
 # 有意改动的上游文件白名单。新增之前先想清楚，并记进 DIVERGENCES.md
-ALLOWED='^(apps/kimi-code/src/main\.ts|apps/kimi-code/package\.json|README\.md|README\.en\.md|CLAUDE\.md|DIVERGENCES\.md|pnpm-lock\.yaml)$'
+ALLOWED='^(apps/kimi-code/src/main\.ts|apps/kimi-code/package\.json|README\.md|README\.en\.md|CLAUDE\.md|DIVERGENCES\.md|\.gitignore|pnpm-lock\.yaml)$'
 
 if ! git rev-parse --verify --quiet upstream/main >/dev/null; then
   git remote add upstream https://github.com/MoonshotAI/kimi-code.git 2>/dev/null || true

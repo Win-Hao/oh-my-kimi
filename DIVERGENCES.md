@@ -30,6 +30,7 @@
 | `CLAUDE.md` 是**指向 `AGENTS.md` 的符号链接**（mode 120000） | 断开软链，改成真文件，内容是 fork 层指南 | 上游那套讲的是给 kimi-code 提 PR 的流程，在这里会误导 | ⚠️ **别直接写 `CLAUDE.md`**——上游它是软链，直接写会覆盖掉 `AGENTS.md`（60 天改 23 次的烫文件）。现在已是普通文件，但同步时若上游改回软链要留意。`AGENTS.md` 和 `flake.nix` **一个字都不碰** |
 | 增删 workspace 包要同步 `flake.nix` | **故意不做** | `flake.nix` 60 天改 25 次，为两行登记去碰它换来长期冲突；Nix 构建这里不用，`nix-build.yml` 已禁用 | 代价：`node scripts/check-nix-workspace.mjs` 会一直报 `@omk/core` 缺失、退出码 1。**这是预期行为，别去"修"** |
 | 无 `packages/omk/AGENTS.md` | 新增 | 上游约定「follow the nearest AGENTS.md」，在 omk 里干活时会命中这份 | 新文件，不冲突 |
+| `.gitignore` 无 `.serena/` | 追加一行 `.serena/` | Serena MCP 会在仓库根建项目文件，`git add -A` 会把它扫进来（已误提交过一次） | 上游 60 天改 7 次；追加在文件末尾，冲突时两边都保留 |
 
 ## 我已改进、不许被上游盖回去的行为
 
