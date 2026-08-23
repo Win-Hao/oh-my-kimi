@@ -942,7 +942,11 @@ importers:
         specifier: ^4.1.4
         version: 4.1.4
 
-  packages/omk: {}
+  packages/omk:
+    dependencies:
+      '@moonshot-ai/agent-core-v2':
+        specifier: workspace:^
+        version: link:../agent-core-v2
 
   packages/pi-tui:
     dependencies:

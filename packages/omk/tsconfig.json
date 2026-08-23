@@ -1,5 +1,8 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {},
-  "include": ["src", "test"]
+  // 上游用 `*.md?raw` 导入 prompt 文件，环境声明在 agent-core-v2 的 env.d.ts 里。
+  // omk 依赖 agent-core-v2，tsc 会跟进它的源码，所以必须把那份声明也纳入编译。
+  // 若上游挪走该文件，这里会立刻报错——那是好事，别改成通配符掩盖掉。
+  "include": ["src", "test", "../agent-core-v2/src/env.d.ts"]
 }
