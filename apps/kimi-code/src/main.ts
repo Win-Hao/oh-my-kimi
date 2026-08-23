@@ -1,3 +1,6 @@
+// oh-my-kimi: the single seam into upstream. Everything else lives in packages/omk.
+import '@omk/core';
+
 /**
  * Kimi Code entry point.
  *

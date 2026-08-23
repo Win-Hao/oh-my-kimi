@@ -94,6 +94,7 @@
     "@moonshot-ai/pi-tui": "workspace:^",
     "@moonshot-ai/vis-server": "workspace:^",
     "@moonshot-ai/vis-web": "workspace:*",
+    "@omk/core": "workspace:^",
     "@types/semver": "^7.7.0",
     "@types/yazl": "^2.4.6",
     "chalk": "^5.4.1",
