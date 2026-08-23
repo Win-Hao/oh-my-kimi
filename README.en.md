@@ -2,9 +2,9 @@
 
 # oh-my-kimi
 
-**A personally maintained enhanced build of [Kimi Code](https://github.com/MoonshotAI/kimi-code).**
+**A personally maintained fork of [Kimi Code](https://github.com/MoonshotAI/kimi-code), with a few additions of my own.**
 
-A real fork that keeps tracking upstream.
+Continuously synced with upstream, not a one-time copy.
 
 [中文](./README.md) · [Project site](https://win-hao.github.io/oh-my-kimi/) · [Divergences](./DIVERGENCES.md)
 
@@ -20,7 +20,7 @@ Additions layered on top of upstream kimi-code. Everything lives in a standalone
 ## Architecture
 
 ```
-packages/omk/               ← all enhancements; new files don't conflict with upstream
+packages/omk/               ← everything new lives here; new files don't conflict with upstream
 apps/kimi-code/src/main.ts  ← one line: import '@omk/core'    ┐ the entire
 apps/kimi-code/package.json ← one devDependency entry          ┘ upstream footprint
 ```

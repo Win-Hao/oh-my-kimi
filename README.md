@@ -2,9 +2,9 @@
 
 # oh-my-kimi
 
-**个人维护的 [Kimi Code](https://github.com/MoonshotAI/kimi-code) 增强版。**
+**个人维护的 [Kimi Code](https://github.com/MoonshotAI/kimi-code) fork，加了些自用的功能。**
 
-真 fork，持续同步上游。
+持续同步上游，不是一次性拷贝。
 
 [English](./README.en.md) · [项目主页](https://win-hao.github.io/oh-my-kimi/) · [分歧记录](./DIVERGENCES.md)
 
@@ -14,13 +14,13 @@
 
 ## 这是什么
 
-在上游 kimi-code 之上做加法。所有增强都住在独立的 `packages/omk/` 包里，
+在上游 kimi-code 之上做加法。新加的东西都住在独立的 `packages/omk/` 包里，
 **对上游源码的侵入只有 2 个文件、4 行**。
 
 ## 架构
 
 ```
-packages/omk/              ← 增强功能都在这，新文件不与上游冲突
+packages/omk/              ← 新功能都在这，新文件不与上游冲突
 apps/kimi-code/src/main.ts ← 顶部一行 import '@omk/core'   ┐ 对上游的
 apps/kimi-code/package.json← devDeps 一行 @omk/core        ┘ 全部侵入
 ```
