@@ -4,8 +4,9 @@
 name: omk CI
 
 on:
+  # 功能分支也跑：新功能在分支上做完才合回 main，只在 main 上跑等于永远晚一步。
   push:
-    branches: [main]
+    branches: ['**']
   pull_request:
   workflow_dispatch:
 
