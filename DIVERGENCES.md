@@ -24,6 +24,7 @@
 | `apps/kimi-code/package.json` devDeps | 多一条 `@omk/core: workspace:^` | 让 tsdown 打包时带上 omk | 同上 |
 | `README.md` 是 kimi-code 官方介绍 | 换成 oh-my-kimi 的介绍 | 这是独立仓库，访客第一眼该看到本项目 | 上游近 60 天只改过 1 次，冲突时**永远保留我方** |
 | 无 `README.en.md` | 新增英文版 | 中文为主，英文兜住国际访客 | 新文件，不冲突 |
+| `README.zh-CN.md` 是上游中文 README | **删除** | 本 fork 的 `README.md` 本身就是中文，再留一份是重复；且已无任何引用（上游只在被我们换掉的 `README.md` 里链过它） | 上游 60 天只改 1 次。若上游改动它，会产生 delete/modify 冲突——**选删除**（`git rm README.zh-CN.md`） |
 | 上游 8 个 workflow 全 active | `ci` / `nix-build` / `release` / `pkg-pr-new` / `pr-title-checker` / `docs-deploy` **在仓库设置里禁用**（GitHub API，不改文件） | 跑整个 monorepo 太重且缺上游 secret；`docs-deploy` 会占用 Pages 部署 | **不改文件所以零冲突**。上游新增 workflow 时记得也去禁用 |
 | 无自建 CI | 新增 `.github/workflows/omk-ci.yml` | 只验证 omk 包 + 守住侵入面白名单 | 新文件，不冲突 |
 | Pages 部署上游 vitepress 文档 | 新增 `.github/workflows/omk-pages.yml`，部署 `site/` | 项目主页 | 新文件，不冲突 |
