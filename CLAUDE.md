@@ -70,6 +70,17 @@ apps/kimi-code/package.json    devDeps 一行 @omk/core
 
 `rerere` 和 `zdiff3` 已配好，同一个冲突第二次会自动套用上次的解法。
 
+### 5. 查 CI 结果要按 commit SHA 取，不能取「最新一个」
+
+```bash
+./scripts/omk-ci-status.sh          # 等当前 HEAD 的 CI 跑完
+```
+
+> ⚠️ **踩过的坑**：push 之后立刻跑 `gh run list --limit 1` 取 run id，
+> 那一刻 GitHub 还没创建新 run，取到的是**上一次**的——如果上一次是绿的，
+> 你会得到一个假的成功，而真正的失败被漏掉。
+> 正确做法是 `gh run list --commit "$(git rev-parse HEAD)"`，脚本已经封好。
+
 ---
 
 ## 上游规则的「不适用清单」
