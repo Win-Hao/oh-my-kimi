@@ -32,6 +32,7 @@
 | 增删 workspace 包要同步 `flake.nix` | **故意不做** | `flake.nix` 60 天改 25 次，为两行登记去碰它换来长期冲突；Nix 构建这里不用，`nix-build.yml` 已禁用 | 代价：`node scripts/check-nix-workspace.mjs` 会一直报 `@omk/core` 缺失、退出码 1。**这是预期行为，别去"修"** |
 | 无 `packages/omk/AGENTS.md` | 新增 | 上游约定「follow the nearest AGENTS.md」，在 omk 里干活时会命中这份 | 新文件，不冲突 |
 | commit 描述用祈使句 + `(#PR号)` 后缀 | 改用**过去时**、scope 一律 `omk/<子模块>`、不带 PR 号 | fork 不提 PR，PR 号会指向不存在的东西；过去时让 `git log` 里 fork 的 commit 和 merge 进来的上游 commit 一眼可分。照的是 oh-my-pi `docs/porting-from-pi-mono.md` 第 14 节 | 只影响我方新 commit，不产生冲突。规则写在 `CLAUDE.md` 第 6 条 |
+| `registerBuiltinSkill` 只存在于 `packages/agent-core-v2/src/app/skillCatalog/builtin/registry.ts`，barrel 未导出 | omk 走深导入 `@moonshot-ai/agent-core-v2/app/skillCatalog/builtin/registry` 注册 `/eli5` | 要让一条命令在 CLI 里真的敲得出来，只有「注册成 builtin skill」这一条零侵入路径：TUI 的斜杠命令来自上游写死的 `BUILTIN_SLASH_COMMANDS`（`apps/kimi-code/src/tui/commands/registry.ts`），引擎的 `contributeCommand` 只通过 RPC 暴露、TUI 不读它 | **不改上游文件，但依赖上游内部路径**。上游若挪走/改名该模块，import 会直接抛错，`packages/omk/test/eli5.test.ts` 会立刻红——那是好事，别用 try/catch 掩盖 |
 | `.gitignore` 无 `.serena/` | 追加一行 `.serena/` | Serena MCP 会在仓库根建项目文件，`git add -A` 会把它扫进来（已误提交过一次） | 上游 60 天改 7 次；追加在文件末尾，冲突时两边都保留 |
 
 ## 我已改进、不许被上游盖回去的行为

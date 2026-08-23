@@ -64,7 +64,22 @@ pnpm --filter @omk/core typecheck   # 类型检查
 
 ## 功能
 
-_（骨架刚搭好，第一个功能还没落地。）_
+### `/eli5` —— 说人话
+
+把上一条回答（或指定话题）做成**一张 HTML 图解**：大图、少字，写到系统临时目录后直接在浏览器打开。
+
+```
+/eli5                 # 重讲上一条回答
+/eli5 kubernetes      # 讲一个指定话题
+```
+
+照抄 [anthropics/claude-plugins-community](https://github.com/anthropics/claude-plugins-community)
+里 `eli5` 插件的形状——正文只有一句核心指令，剩下的交给模型自己判断；我们只补了终端需要的落地部分
+（写临时目录、打开、别写进仓库）。出处见 [`packages/omk/NOTICE.md`](./packages/omk/NOTICE.md)。
+
+实现上它注册成上游的 **builtin skill**，所以面板里是裸的 `/eli5`（用户自建 skill 会带 `skill:` 前缀），
+而且**一个上游文件都不用改**——TUI 的斜杠命令是上游写死的静态数组，
+引擎的 `contributeCommand` 又只走 RPC、TUI 根本不读，builtin skill 是唯一的零侵入路径。
 
 ## 与上游的关系
 

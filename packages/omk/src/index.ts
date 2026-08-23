@@ -17,6 +17,8 @@
 // Side-effect import: populates the upstream scoped-service registry.
 import '@moonshot-ai/agent-core-v2';
 
+import { ELI5_FEATURE_NAME } from '#/skills/eli5';
+
 export const OMK_VERSION = '0.1.0';
 
 /** Features register themselves here as they are added. */
@@ -34,6 +36,12 @@ export function listFeatures(): readonly string[] {
 // Features go below. Each one should live in its own module under `src/` and be
 // imported here, so that this file stays a readable manifest of what omk adds.
 // ---------------------------------------------------------------------------
+
+// `/eli5` — re-explains the last answer (or a given topic) in plain language.
+// Registered as an upstream *builtin* skill, which is what makes it a bare
+// `/eli5` in the palette rather than `/skill:eli5`; the module explains why a
+// skill and not a contributed command.
+registerFeature(ELI5_FEATURE_NAME);
 
 if (process.env['OMK_DEBUG'] === '1') {
   process.stderr.write(`[omk] v${OMK_VERSION} loaded, ${features.length} feature(s)\n`);

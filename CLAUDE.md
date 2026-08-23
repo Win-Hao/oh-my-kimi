@@ -111,6 +111,24 @@ chore(omk): synced upstream (d723cc47e..a1b2c3d4e)
 chore(omk): synced upstream (<from>..<to>)
 ```
 
+### 7. 新功能在分支上做，不在 main 上做
+
+```bash
+./scripts/omk-sync.sh          # 先同步，别在落后的 main 上开分支
+git switch -c feat/omk-<功能>
+# ... 做完，测试绿了 ...
+git switch main && git merge --no-ff feat/omk-<功能>
+```
+
+两条限定，不然分支本身会变成麻烦：
+
+- **当天合回去。** 这个 fork 的同步是从 upstream merge 进 main，一条活了一周的功能分支
+  等于要同时应付「上游变化」和「main 变化」两个方向的合并，比直接在 main 上做还累。
+- **合并用 `--no-ff`。** `git log` 里已经混着 merge 进来的上游 commit，功能分支再被
+  fast-forward 掉，就分不出哪几个 commit 属于同一个功能了。
+
+`omk-ci.yml` 的触发条件已经放宽到 `branches: ['**']`，分支推上去就会跑。
+
 ---
 
 ## 上游规则的「不适用清单」
