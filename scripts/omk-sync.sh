@@ -54,7 +54,7 @@ if [ "${DRY}" = "1" ]; then
   exit 0
 fi
 
-git merge upstream/main --no-edit -m "chore(omk): 同步上游 (${FROM}..${TO})"
+git merge upstream/main --no-edit -m "chore(omk): synced upstream (${FROM}..${TO})"
 echo
 echo "✅ 同步完成。接下来跑一遍验证："
 echo "   pnpm install && pnpm --filter @omk/core test"

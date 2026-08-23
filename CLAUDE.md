@@ -81,6 +81,36 @@ apps/kimi-code/package.json    devDeps 一行 @omk/core
 > 你会得到一个假的成功，而真正的失败被漏掉。
 > 正确做法是 `gh run list --commit "$(git rev-parse HEAD)"`，脚本已经封好。
 
+### 6. commit 用英文过去时，scope 按子模块嵌套
+
+```
+<type>(omk/<子模块>): <过去时英文描述>
+```
+
+```
+feat(omk/registry): added an override for the upstream permission service
+fix(omk/ci): restored the footprint check on merge commits
+docs(omk/readme): stopped calling the fork an "enhanced build"
+chore(omk): synced upstream (d723cc47e..a1b2c3d4e)
+```
+
+- **英文、过去时**（`added` / `restored` / `stopped`），冒号后全小写。
+  这跟上游 kimi-code 的祈使句（`add` / `keep`）**故意不一样**，
+  照的是 oh-my-pi 的 `docs/porting-from-pi-mono.md` 第 14 节。
+  好处是 `git log` 里 fork 的 commit 和 merge 进来的上游 commit 一眼能分开。
+- **scope 一律以 `omk/` 开头**，后面跟子模块（`registry` / `ci` / `readme` / `scripts` / `sync`）。
+  只有横跨多个子模块、或者纯仓库级的操作（同步、版本）才用光秃秃的 `omk`。
+  `omk/` 这个前缀是关键：它保证任何一条 fork 层 commit 都不会跟上游的 scope 撞名。
+- type 用满 `feat` `fix` `refactor` `perf` `docs` `test` `chore`。
+- **不带 `(#1234)` 后缀**——那是上游 PR 号，这里没有 PR 环节，写了会指向不存在的 PR。
+- **不加 agent 署名**，也不在正文里暴露 agent 身份（这条跟上游一致，见下）。
+
+同步上游的 commit 由 `omk-sync.sh` 生成，标题里带 commit range 当同步点标记：
+
+```
+chore(omk): synced upstream (<from>..<to>)
+```
+
 ---
 
 ## 上游规则的「不适用清单」
@@ -91,7 +121,7 @@ apps/kimi-code/package.json    devDeps 一行 @omk/core
 |---|---|
 | 填 `.github/pull_request_template.md` | 不提 PR 给上游，不适用 |
 | 跑 `gen-changesets` skill 生成 changeset | 不发包，不适用 |
-| PR 标题用 Conventional Commit | commit 仍沿用该风格，但没有 PR 环节 |
+| PR 标题用 Conventional Commit | commit 仍用该风格，但没有 PR 环节；描述改用过去时，见第 6 条 |
 | 增删 workspace 包时同步 `flake.nix` | **故意不做**，见下 |
 
 ### 已知的「预期失败」
