@@ -4,7 +4,7 @@
 
 **A personally maintained enhanced build of [Kimi Code](https://github.com/MoonshotAI/kimi-code).**
 
-A real fork that actually tracks upstream — not a plugin layer.
+A real fork that keeps tracking upstream.
 
 [中文](./README.md) · [Project site](https://win-hao.github.io/oh-my-kimi/) · [Divergences](./DIVERGENCES.md)
 
@@ -14,39 +14,28 @@ A real fork that actually tracks upstream — not a plugin layer.
 
 ## What this is
 
-Additions layered on top of upstream kimi-code, built to learn the harness internals
-by extending them. Everything lives in a standalone `packages/omk/` package —
-**the total footprint in upstream source is 2 files, 4 lines.**
-
-## Why not a plugin layer
-
-There are already 15 GitHub projects named `oh-my-kimi`. **14 are plugin or
-orchestration layers; exactly one is a real fork.** Top star count is 6, and most
-stopped receiving commits between March and July 2026.
-
-Plugin layers have a ceiling — once the skills, hooks and MCP servers are wired up,
-there is nothing left to build. Real forks are rare because tracking upstream is
-expensive (kimi-code landed 281 commits in the last 30 days).
-
-This project takes the empty slot: **a real fork that is really maintained.**
+Additions layered on top of upstream kimi-code. Everything lives in a standalone
+`packages/omk/` package — **the total footprint in upstream source is 2 files, 4 lines.**
 
 ## Architecture
 
 ```
-packages/omk/               ← everything I write; new files never conflict
+packages/omk/               ← all enhancements; new files don't conflict with upstream
 apps/kimi-code/src/main.ts  ← one line: import '@omk/core'    ┐ the entire
 apps/kimi-code/package.json ← one devDependency entry          ┘ upstream footprint
 ```
 
-`main.ts` was picked as the seam from churn data: upstream touched it **6** times in
-60 days. The more "proper" mount point, `agent-core-v2/src/index.ts` (the
-`import = register` hub), was touched **69** times — the single hottest file in the repo.
+The seam is deliberately placed in `apps/kimi-code/src/main.ts`, a rarely-touched
+entry file, rather than the frequently-rewritten registration hub at
+`agent-core-v2/src/index.ts`. A CI check enforces this: any upstream file change
+outside the allowlist fails the build.
 
 ## Development
 
 ```bash
 pnpm install
 
+# KIMI_CODE_HOME keeps this isolated from your everyday kimi install
 cd apps/kimi-code
 OMK_DEBUG=1 KIMI_CODE_HOME=~/.oh-my-kimi \
   npx tsx --tsconfig ./tsconfig.dev.json \
@@ -56,6 +45,11 @@ OMK_DEBUG=1 KIMI_CODE_HOME=~/.oh-my-kimi \
 > ⚠️ `--tsconfig ./tsconfig.dev.json` is required; without it the build fails on
 > `experimentalDecorators`. Upstream's own `dev:cli-only` script omits it.
 
+```bash
+pnpm --filter @omk/core test        # unit tests
+pnpm --filter @omk/core typecheck   # type check
+```
+
 ## Syncing upstream
 
 ```bash
@@ -64,7 +58,14 @@ OMK_DEBUG=1 KIMI_CODE_HOME=~/.oh-my-kimi \
 ```
 
 Merge, not rebase: this fork sends no PRs upstream, so clean history buys nothing,
-and merge only resolves the delta since the last sync.
+and merge only resolves the delta since the last sync. Run it every day or two.
+
+Whenever you decide to diverge from upstream, record it in
+[`DIVERGENCES.md`](./DIVERGENCES.md) — otherwise the next sync quietly reverts you.
+
+## Features
+
+_(Scaffolding only so far; the first feature has not landed yet.)_
 
 ## Relationship to upstream
 

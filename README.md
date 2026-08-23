@@ -4,7 +4,7 @@
 
 **个人维护的 [Kimi Code](https://github.com/MoonshotAI/kimi-code) 增强版。**
 
-真 fork，持续同步上游 —— 不是插件层。
+真 fork，持续同步上游。
 
 [English](./README.en.md) · [项目主页](https://win-hao.github.io/oh-my-kimi/) · [分歧记录](./DIVERGENCES.md)
 
@@ -14,40 +14,27 @@
 
 ## 这是什么
 
-在上游 kimi-code 之上做加法，一边加功能一边把 harness 的内部拆开看懂。
-所有增强都住在独立的 `packages/omk/` 包里，**对上游源码的侵入只有 2 个文件、4 行**。
-
-## 为什么不做插件层
-
-GitHub 上已经有 15 个叫 `oh-my-kimi` 的项目。查了一遍：**14 个是插件 / 编排层，只有 1 个是真 fork。**
-最高 6 颗星，绝大多数停更在 2026 年 3～7 月。
-
-插件层有天花板 —— 把 skill、hook、MCP 配完就没得做了，项目自然停更。
-真 fork 没人做，因为跟上游的维护成本吓人（kimi-code 近 30 天 281 个提交）。
-
-这个项目要占的就是那个空位：**真 fork + 真维护**。
+在上游 kimi-code 之上做加法。所有增强都住在独立的 `packages/omk/` 包里，
+**对上游源码的侵入只有 2 个文件、4 行**。
 
 ## 架构
 
 ```
-packages/omk/              ← 我写的所有东西都在这，新文件永远不冲突
+packages/omk/              ← 增强功能都在这，新文件不与上游冲突
 apps/kimi-code/src/main.ts ← 顶部一行 import '@omk/core'   ┐ 对上游的
 apps/kimi-code/package.json← devDeps 一行 @omk/core        ┘ 全部侵入
 ```
 
-接缝选 `main.ts` 是查过数据的：它近 60 天只被上游改过 **6** 次。
-而看起来更正统的挂载点 `agent-core-v2/src/index.ts`（`import = register` 的枢纽）
-被改了 **69** 次，是全仓第一热点文件 —— 挂在那上面等于天天解冲突。
-
-同理，上游 churn 最高的 `src/agent`（1971）、`src/app`（1370）、`src/session`（678）
-一律不碰。
+挂载点特意选在 `apps/kimi-code/src/main.ts`——它是上游很少改动的入口文件，
+而不是 `agent-core-v2/src/index.ts` 那种高频变动的注册枢纽。
+CI 里有一条检查守着这个约束：任何超出白名单的上游文件改动都会让构建失败。
 
 ## 开发
 
 ```bash
 pnpm install
 
-# 启动（KIMI_CODE_HOME 隔离，不污染你日常在用的 kimi）
+# 启动（KIMI_CODE_HOME 隔离，不污染日常在用的 kimi）
 cd apps/kimi-code
 OMK_DEBUG=1 KIMI_CODE_HOME=~/.oh-my-kimi \
   npx tsx --tsconfig ./tsconfig.dev.json \
@@ -70,13 +57,10 @@ pnpm --filter @omk/core typecheck   # 类型检查
 ```
 
 用 `merge` 不用 `rebase`：这个 fork 不往上游提 PR，不需要干净的历史，
-而 merge 每次只处理增量，rebase 每次都要重放全部提交。
+而 merge 每次只处理增量。建议每天或每两天跑一次，别攒。
 
-**建议每天或每两天跑一次。** 攒一周是 70 个提交，攒一个月是 280 个 ——
-冲突难度对间隔是超线性的。
-
-每次决定「这里要跟上游不一样」，立刻记进 [`DIVERGENCES.md`](./DIVERGENCES.md)。
-没有那张表，下次同步就会有人（包括三个月后的自己）把上游的写法又搬回来。
+每次决定「这里要跟上游不一样」，记进 [`DIVERGENCES.md`](./DIVERGENCES.md)，
+否则下次同步很容易把上游的写法又搬回来。
 
 ## 功能
 
